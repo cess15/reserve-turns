@@ -16,17 +16,17 @@ class ReservationController extends Controller
 
     public function store(Request $request)
     {
-        $reservation = Reservation::create([
-            'student_id' => $request->student_id,
-            'turn_id' => $request->turn_id
-        ]);
-        Turn::where('id', $request->turn_id)->update([
-            'status' => 0
-        ]);
+        $reservation = $this->saveReservation($request);
         return redirect()->route('students.show', $reservation->student->slug);
     }
 
     public function guests(Request $request)
+    {
+        $reservation = $this->saveReservation($request);
+        return redirect()->route('reservations.show', $reservation->id);
+    }
+
+    public function saveReservation(Request $request)
     {
         $reservation = Reservation::create([
             'student_id' => $request->student_id,
@@ -35,6 +35,6 @@ class ReservationController extends Controller
         Turn::where('id', $request->turn_id)->update([
             'status' => 0
         ]);
-        return redirect()->route('reservations.show', $reservation->id);
+        return $reservation;
     }
 }

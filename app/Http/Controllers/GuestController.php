@@ -24,17 +24,6 @@ class GuestController extends Controller
 
         ]);
 
-        $reservations = Reservation::join('turns', 'turns.id', 'reservations.turn_id')
-            ->join('students', 'students.id', 'reservations.student_id')
-            ->join('guests', 'guests.student_id', 'students.id')
-            ->select(DB::raw('count(turns.days) as total, turns.days'))
-            ->where('turns.days', strtolower($reservation->turn->days))
-            ->groupBy('turns.days')->get();
-
-        if ($reservations[0]->total <= 1) {
-            return redirect()->route('reservations.show', $reservation->id)->with('message', 'Todavía puede invitar un amigo más');
-        } else {
-            return redirect()->route('students.show', $reservation->student->slug);
-        }
+        return redirect()->route('students.show', $reservation->student->slug);
     }
 }
